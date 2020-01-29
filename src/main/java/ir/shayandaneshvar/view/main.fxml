@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane fx:id="root" prefHeight="540.0" prefWidth="720.0" style="-fx-background-color: #212125;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ir.shayandaneshvar.presenter.MainController">
+   <children>
+      <Label fx:id="encodeLabel" alignment="CENTER" onMouseClicked="#encodeClick" prefHeight="134.0" prefWidth="360.0" style="-fx-background-color: #239d60;" text="Encode" textAlignment="CENTER" textFill="#f7f39a" wrapText="true">
+         <font>
+            <Font name="HelveticaRounded-Bold" size="24.0" />
+         </font>
+         <effect>
+            <DropShadow blurType="ONE_PASS_BOX" />
+         </effect>
+      </Label>
+      <Label fx:id="decodeLabel" alignment="CENTER" layoutX="360.0" onMouseClicked="#decodeClick" prefHeight="134.0" prefWidth="360.0" style="-fx-background-color: #239d60;" text="Decode" textAlignment="CENTER" textFill="#f7f39a" wrapText="true">
+         <font>
+            <Font name="HelveticaRounded-Bold" size="24.0" />
+         </font>
+         <effect>
+            <DropShadow blurType="ONE_PASS_BOX" />
+         </effect>
+      </Label>
+      <JFXTextArea fx:id="textArea" layoutX="20.0" layoutY="152.0" prefHeight="322.0" prefWidth="680.0" style="-fx-background-color: #a3de83;" unFocusColor="#239d60" wrapText="true">
+         <effect>
+            <Glow />
+         </effect>
+         <focusColor>
+            <LinearGradient endX="1.0" endY="1.0">
+               <stops>
+                  <Stop color="#f7f39a" />
+                  <Stop color="#f7f39a" offset="0.007662835249042145" />
+                  <Stop color="#239d60" offset="1.0" />
+               </stops>
+            </LinearGradient>
+         </focusColor>
+         <font>
+            <Font name="HelveticaRounded-Bold" size="16.0" />
+         </font>
+      </JFXTextArea>
+      <JFXTextField fx:id="address" layoutX="20.0" layoutY="489.0" onMouseClicked="#addressClick" prefHeight="29.0" prefWidth="544.0" style="-fx-background-color: #a3de83;" unFocusColor="#239d60">
+         <effect>
+            <Glow />
+         </effect>
+         <focusColor>
+            <LinearGradient endX="1.0" endY="1.0">
+               <stops>
+                  <Stop color="#f7f39a" />
+                  <Stop color="#239d60" offset="1.0" />
+               </stops>
+            </LinearGradient>
+         </focusColor>
+         <font>
+            <Font name="Helvetica-Bold" size="16.0" />
+         </font>
+      </JFXTextField>
+      <JFXButton fx:id="processButton" buttonType="RAISED" layoutX="577.0" layoutY="489.0" onMouseClicked="#processClick" prefHeight="32.0" prefWidth="120.0" style="-fx-background-color: #239d60;" text="Process" textFill="#f7f39a">
+         <ripplerFill>
+            <LinearGradient endX="1.0" endY="1.0">
+               <stops>
+                  <Stop color="#f7f39a" />
+                  <Stop color="#f7f39a" offset="0.007662835249042145" />
+                  <Stop color="#239d60" offset="1.0" />
+               </stops>
+            </LinearGradient>
+         </ripplerFill>
+         <font>
+            <Font name="HelveticaRounded-Bold" size="16.0" />
+         </font>
+      </JFXButton>
+   </children>
+</AnchorPane>
