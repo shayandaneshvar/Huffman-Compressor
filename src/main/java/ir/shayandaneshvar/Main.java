@@ -36,7 +36,8 @@ public final class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight()
+        Scene scene = new Scene(root, root.getPrefWidth() - 20,
+                root.getPrefHeight()
                 , true, SceneAntialiasing.BALANCED);
         primaryStage.setResizable(false);
         primaryStage.setScene(scene);
