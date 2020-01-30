@@ -18,7 +18,7 @@ public class TextPersistence implements Persistence<String, String> {
         }
     }
 
-    public static String getEXTENSION() {
+    public static String EXTENSION() {
         return EXTENSION;
     }
 

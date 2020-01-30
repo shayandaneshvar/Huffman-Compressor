@@ -1,7 +1,9 @@
 package ir.shayandaneshvar.services.persistence;
 
-public interface Persistence<U, T> {
-    void write(U address, T t);
+import java.io.IOException;
 
-    T read(U address);
+public interface Persistence<U, T> {
+    void write(U address, T t)throws IOException;
+
+    T read(U address) throws IOException;
 }

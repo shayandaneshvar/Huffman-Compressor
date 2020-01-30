@@ -36,9 +36,7 @@ public class HuffmanTree implements Iterable<BinaryNode> {
                         stack.push(x);
                         System.out.println(stack.peek());
                     });
-//                        stack.push(node.getRight());
                     Optional.ofNullable(node.getLeft()).ifPresent(z -> stack.push(z));
-//                    stack.push(node.getLeft());
                     return node;
                 } else {
                     throw new NoSuchElementException("No more elements!");
@@ -52,6 +50,10 @@ public class HuffmanTree implements Iterable<BinaryNode> {
 //        prepareIterator();
     }
 
+    /**
+     *
+     * @return a dictionary
+     */
     public Map<String, String> encode() {
         calculateHuffmanValues(this);
         Map<String, String> map = new HashMap<>();
@@ -75,9 +77,7 @@ public class HuffmanTree implements Iterable<BinaryNode> {
         while (iterator.hasNext()) {
             BinaryNode next = iterator.next();
             Optional.ofNullable(next.getLeft()).ifPresent(x -> x.appendToHuffmanValue(next.getHuffmanValue() + "0"));
-//            next.getLeft().appendToHuffmanValue(next.getHuffmanValue() + "0");
             Optional.ofNullable(next.getRight()).ifPresent(z -> z.appendToHuffmanValue(next.getHuffmanValue() + "1"));
-//            next.getRight().appendToHuffmanValue(next.getHuffmanValue() + "1");
         }
     }
 

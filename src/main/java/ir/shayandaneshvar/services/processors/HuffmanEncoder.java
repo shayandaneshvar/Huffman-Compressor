@@ -2,6 +2,7 @@ package ir.shayandaneshvar.services.processors;
 
 import ir.shayandaneshvar.model.BinaryNode;
 import ir.shayandaneshvar.model.HuffmanTree;
+import javafx.util.Pair;
 
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -41,6 +42,20 @@ public class HuffmanEncoder implements TextEncoder<String, Map<String, String>,
             assert mappedValue != null;
             builder.append(mappedValue);
         }
+        return builder.toString();
+    }
+
+    public Pair<Map<String, String>, String> getDicCipherPair(Map<String,
+            String> dictionary,
+                                                              String cipher) {
+        return new Pair<>(dictionary, cipher);
+    }
+
+    public String appendDicToCipher(Pair<Map<String, String>, String> pair) {
+        StringBuilder builder = new StringBuilder();
+        pair.getKey().forEach((x, y) -> builder.append(x + "=>" + y + "\n"));
+        builder.append("===");//end of dic
+        builder.append(pair.getValue());
         return builder.toString();
     }
 }
