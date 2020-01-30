@@ -60,8 +60,13 @@ public class HuffmanTree implements Iterable<BinaryNode> {
             BinaryNode node = iterator.next();
             map.put(node.getCharacters(), node.getHuffmanValue());
         }
-        System.err.println(toString());
-        map.remove(root.getCharacters());
+        Iterator<String> keyItr = map.keySet().iterator();
+        while (keyItr.hasNext()) {
+            String string = keyItr.next();
+            if (string.length() > 1) {
+                keyItr.remove();
+            }
+        }
         return map;
     }
 

@@ -6,8 +6,12 @@ import ir.shayandaneshvar.model.HuffmanTree;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-public class HuffmanEncoder implements InfoExtractor<Map<Character, Integer>,
-        Map<String, String>> {
+public class HuffmanEncoder implements TextEncoder<String, Map<String, String>,
+        String>, InfoExtractor<Map<Character, Integer>, Map<String, String>> {
+    /**
+     * @param input repetition of each character  ex:"c"=>2
+     * @return a dictionary  ex:"a"=>"001"
+     */
     @Override
     public Map<String, String> extract(Map<Character, Integer> input) {
         PriorityQueue<BinaryNode> queue = new PriorityQueue<>(BinaryNode::compareTo);
@@ -22,5 +26,21 @@ public class HuffmanEncoder implements InfoExtractor<Map<Character, Integer>,
         }
         HuffmanTree tree = new HuffmanTree(queue.poll());
         return tree.encode();
+    }
+
+    /**
+     * @param input      the input text
+     * @param dictionary mapped values ex: "a"=>"001"
+     * @return encoded text
+     */
+    @Override
+    public String encode(final String input, Map<String, String> dictionary) {
+        StringBuilder builder = new StringBuilder();
+        for (char character : input.toCharArray()) {
+            String mappedValue = dictionary.get(String.valueOf(character));
+            assert mappedValue != null;
+            builder.append(mappedValue);
+        }
+        return builder.toString();
     }
 }
