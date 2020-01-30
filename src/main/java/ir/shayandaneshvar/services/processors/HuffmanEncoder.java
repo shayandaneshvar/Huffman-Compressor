@@ -53,7 +53,7 @@ public class HuffmanEncoder implements TextEncoder<String, Map<String, String>,
 
     public String appendDicToCipher(Pair<Map<String, String>, String> pair) {
         StringBuilder builder = new StringBuilder();
-        pair.getKey().forEach((x, y) -> builder.append(x + "=>" + y + "\n"));
+        pair.getKey().forEach((x, y) -> builder.append(x + "=>" + y + "|"));
         builder.append("===");//end of dic
         builder.append(pair.getValue());
         return builder.toString();
