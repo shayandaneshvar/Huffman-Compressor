@@ -1,9 +1,16 @@
 package ir.shayandaneshvar.services.persistence;
 
-import java.io.IOException;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 
-public interface Persistence<U, T> {
-    void write(U address, T t)throws IOException;
+@Getter
+@Accessors(fluent = true)
+public class Persistence {
+    private CompressedFilePersistence compressed;
+    private TextFilePersistence text;
 
-    T read(U address) throws IOException;
+    public Persistence() {
+        compressed = new CompressedFilePersistence();
+        text = new TextFilePersistence();
+    }
 }

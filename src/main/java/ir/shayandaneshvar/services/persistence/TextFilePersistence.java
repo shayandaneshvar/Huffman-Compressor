@@ -3,7 +3,7 @@ package ir.shayandaneshvar.services.persistence;
 import java.io.*;
 import java.util.Scanner;
 
-public class TextPersistence implements Persistence<String, String> {
+public class TextFilePersistence implements FilePersistence<String, String> {
     private static final String EXTENSION = ".txt";
 
     @Override

@@ -16,7 +16,7 @@ public class CompressedInfoExtractor implements TextDecoder<String, Map<String
     }
 
     /**
-     * @param readContent content read with CompressedPersistence read method
+     * @param readContent content read with CompressedFilePersistence read method
      * @return mapped values in this form : "001" => a
      */
     public Map<String, String> getDictionary(Pair<String, String> readContent) {

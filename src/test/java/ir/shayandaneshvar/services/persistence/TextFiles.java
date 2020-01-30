@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 
 public class TextFiles {
-    private static TextPersistence textPersistence = new TextPersistence();
+    private static TextFilePersistence textPersistence = new TextFilePersistence();
     private static String string;
 
     static {

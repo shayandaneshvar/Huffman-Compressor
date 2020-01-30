@@ -4,7 +4,7 @@ import javafx.util.Pair;
 
 import java.io.IOException;
 
-public class CompressedPersistence implements Persistence<String,
+public class CompressedFilePersistence implements FilePersistence<String,
         Pair<String, String>> {
     private static final String EXTENSION = ".shct";
 

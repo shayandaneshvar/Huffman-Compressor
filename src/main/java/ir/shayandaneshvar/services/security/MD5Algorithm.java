@@ -15,11 +15,11 @@ public class MD5Algorithm implements HashingAlgorithm {
             // Convert byte array into signum representation
             BigInteger num = new BigInteger(1, messageDigest);
             // Convert message digest into hex value
-            StringBuilder hashtext = new StringBuilder(num.toString(16));
-            while (hashtext.length() < 32) {
-                hashtext.insert(0, "0");
+            StringBuilder hashText = new StringBuilder(num.toString(16));
+            while (hashText.length() < 32) {
+                hashText.insert(0, "0");
             }
-            return hashtext.toString();
+            return hashText.toString();
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
