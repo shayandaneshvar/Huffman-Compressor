@@ -1,5 +1,6 @@
 package ir.shayandaneshvar;
 
+import ir.shayandaneshvar.presenter.MainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -13,7 +14,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public final class Main extends Application {
-    private AnchorPane root;
+    private static AnchorPane root;
+    private static Stage stage;
 
     public static void main(String[] args) {
         launch(args);

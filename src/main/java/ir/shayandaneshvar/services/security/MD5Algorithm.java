@@ -4,6 +4,9 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * using for hmac
+ */
 public class MD5Algorithm implements HashingAlgorithm {
     @Override
     public String getHashedValue(String input) {
