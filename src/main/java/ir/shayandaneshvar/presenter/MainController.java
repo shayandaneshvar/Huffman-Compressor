@@ -129,13 +129,8 @@ public final class MainController implements Initializable {
     }
 
     private void handleFileClick(File file) throws StringIndexOutOfBoundsException {
-        int index = file.toString().lastIndexOf(".");
-        if (index <= 0) {
-            somethingWentWrong();
-        }
         compressedRead = null;
-        if (file.toString().substring(index)
-                .equals(CompressedFilePersistence.EXTENSION())) {
+        if (file.toString().endsWith(CompressedFilePersistence.EXTENSION())) {
             encodeDecodeToggleButton.selectedProperty().set(false);
             try {
                 handleDecoding(file);
@@ -143,17 +138,18 @@ public final class MainController implements Initializable {
                 e.printStackTrace();
                 somethingWentWrong();
             }
-        } else if (file.toString().substring(index)
-                .equals(TextFilePersistence.EXTENSION())) {
+        } else if (file.toString().endsWith(TextFilePersistence.EXTENSION())) {
             decoded = null;
             encodeDecodeToggleButton.selectedProperty().set(true);
             textArea.setText(provider.persistence().text().read(file.toString()));
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Format not supported!");
-            alert.setContentText("Files can be in .txt or .shct format");
-            alert.showAndWait();
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Format not supported!");
+                alert.setContentText("Files can be in .txt or .shct format");
+                alert.showAndWait();
+            });
         }
     }
 
@@ -342,7 +338,11 @@ public final class MainController implements Initializable {
         xtreme.bindBidirectional(securityCheckbox.selectedProperty());
         encodeDecodeToggleButton.selectedProperty().set(true);
         if (Main.getArgs().length > 0 && Main.getArgs()[0].trim().length() > 3) {
-            File file = new File(Main.getArgs()[0].replace(", ", " "));
+            String add = "";
+            for (String str : Main.getArgs()) {
+                add += " " + str;
+            }
+            File file = new File(add.trim());
             executor.execute(() -> {
                 if (root == null) {
                     try {
