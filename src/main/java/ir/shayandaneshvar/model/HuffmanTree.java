@@ -32,10 +32,7 @@ public class HuffmanTree implements Iterable<BinaryNode> {
                 handleInit();
                 if (hasNext()) {
                     BinaryNode node = stack.pop();
-                    Optional.ofNullable(node.getRight()).ifPresent(x -> {
-                        stack.push(x);
-                        System.out.println(stack.peek());
-                    });
+                    Optional.ofNullable(node.getRight()).ifPresent(x -> stack.push(x));
                     Optional.ofNullable(node.getLeft()).ifPresent(z -> stack.push(z));
                     return node;
                 } else {
@@ -51,7 +48,6 @@ public class HuffmanTree implements Iterable<BinaryNode> {
     }
 
     /**
-     *
      * @return a dictionary
      */
     public Map<String, String> encode() {
@@ -72,7 +68,7 @@ public class HuffmanTree implements Iterable<BinaryNode> {
         return map;
     }
 
-    public static void calculateHuffmanValues(HuffmanTree tree) {
+    private static void calculateHuffmanValues(HuffmanTree tree) {
         Iterator<BinaryNode> iterator = tree.iterator();
         while (iterator.hasNext()) {
             BinaryNode next = iterator.next();
@@ -99,7 +95,8 @@ public class HuffmanTree implements Iterable<BinaryNode> {
         StringBuilder stringBuilder = new StringBuilder("Pre-Order : ");
         Iterator<BinaryNode> iterator = iterator();
         while (iterator.hasNext()) {
-            stringBuilder.append("(" + iterator.next().getCharacters() + ")");
+            stringBuilder.append("(").append(iterator.next().getCharacters())
+                    .append(")");
         }
         return stringBuilder.toString();
     }

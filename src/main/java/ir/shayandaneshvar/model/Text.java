@@ -18,10 +18,6 @@ public class Text {
         return text.get();
     }
 
-    public void setText(final String string) {
-        text.set(string);
-    }
-
     public StringProperty getTextProperty() {
         return text;
     }

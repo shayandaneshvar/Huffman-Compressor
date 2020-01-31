@@ -30,6 +30,10 @@ public class CompressedFilePersistence implements FilePersistence<String,
         }
     }
 
+    public void write(String address, String header, String info) {
+        write(address, new Pair<>(header, info));
+    }
+
     /**
      * @param address file
      * @return (buffer, cipher)=>buffer => (pwd and more === dic)

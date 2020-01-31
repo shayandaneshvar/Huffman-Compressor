@@ -5,6 +5,8 @@ import ir.shayandaneshvar.model.Text;
 import ir.shayandaneshvar.services.ServiceProvider;
 import ir.shayandaneshvar.services.persistence.CompressedFilePersistence;
 import ir.shayandaneshvar.services.persistence.TextFilePersistence;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -24,10 +26,9 @@ import javafx.util.Pair;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -36,26 +37,28 @@ public final class MainController implements Initializable {
     private final ExecutorService executor = Executors.newCachedThreadPool();
     private String enteredPassword = "";
     private String readPassword = "";
-    private boolean xtreme = false;
+    private BooleanProperty xtreme = new SimpleBooleanProperty(false);
     private Text text;
     private ServiceProvider provider;
     private Pair<String, String> compressedRead = null;
-    private Runnable handleDecode;
-    private String decoded;
+    private Callable<Boolean> handleDecode;
+    private String decoded = null;
 
     {
         handleDecode = () -> {
             readPassword = provider.processor().compressedExtractor()
                     .getPassword(compressedRead);
-            xtreme = provider.processor().compressedExtractor()
-                    .getExtremeSecurityStatus(compressedRead);
+            xtreme.setValue(provider.processor().compressedExtractor()
+                    .getExtremeSecurityStatus(compressedRead));
             String result = provider.processor().compressedExtractor()
                     .extract(compressedRead);
-            if (xtreme) {
+            System.err.println("result:" + result);
+            if (xtreme.get()) {
                 decoded = provider.security().base64().decode(result);
             } else {
                 decoded = result;
             }
+            return true;
         };
     }
 
@@ -64,7 +67,6 @@ public final class MainController implements Initializable {
 
     @FXML
     private Label encodeLabel;
-
 
     @FXML
     private JFXTextArea textArea;
@@ -124,13 +126,12 @@ public final class MainController implements Initializable {
 
     private void handleFileClick(File file) {
         int index = file.toString().lastIndexOf(".");
+        compressedRead = null;
         if (file.toString().substring(index)
                 .equals(CompressedFilePersistence.EXTENSION())) {
             encodeDecodeToggleButton.selectedProperty().set(false);
             try {
-                compressedRead = provider.persistence().compressed().read(file.toString());
-                textArea.setText(compressedRead.getValue());
-                executor.execute(handleDecode);
+                handleDecoding(file);
             } catch (IOException e) {
                 e.printStackTrace();
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -141,6 +142,7 @@ public final class MainController implements Initializable {
             }
         } else if (file.toString().substring(index)
                 .equals(TextFilePersistence.EXTENSION())) {
+            decoded = null;
             encodeDecodeToggleButton.selectedProperty().set(true);
             textArea.setText(provider.persistence().text().read(file.toString()));
         } else {
@@ -152,9 +154,92 @@ public final class MainController implements Initializable {
         }
     }
 
+    private boolean handleDecoding(File file) throws IOException {
+        compressedRead = provider.persistence().compressed().read(file.toString());
+        textArea.setText(compressedRead.getValue());
+        try {
+            boolean result = executor.submit(handleDecode).get();
+            if (readPassword.length() != 0) {
+                passwordCheckbox.selectedProperty().set(true);
+            } else {
+                passwordCheckbox.selectedProperty().set(false);
+            }
+            return result;
+        } catch (InterruptedException | ExecutionException e) {
+            return false;
+        }
+    }
+
     @FXML
     void processClick(MouseEvent event) {
-        // TODO: 1/31/2020
+        File file = new File(address.getText());
+        boolean error;
+        try {
+            error = !file.getParentFile().exists();
+        } catch (NullPointerException e) {
+            error = false;
+        }
+        if (error) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Such Directory");
+            alert.setHeaderText("Wrong destination address");
+            alert.setContentText("The selected directory doesn't exist!");
+            alert.showAndWait();
+            addressClick(event);
+            return;
+        }
+        if (!encodeDecodeToggleButton.selectedProperty().get()) {
+            if (compressedRead == null) {
+                provider.persistence().text().write(address.getText() + ".txt", text.getText());
+                try {
+                    handleDecoding(new File(address.getText() + ".txt"));
+                } catch (IOException e) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Something went wrong!");
+                    alert.setContentText("Files can be corrupted or damaged!");
+                    alert.showAndWait();
+                    return;
+                }
+            }
+            if (isDecodePermitted()) {
+                textArea.setText(decoded);
+                provider.persistence().text().write(address.getText(), decoded);
+                return;
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Wrong Password");
+                alert.setContentText("The Entered password Doesn't Match!");
+                alert.showAndWait();
+                handlePassword(event);
+            }
+        } else {//fixme => chain of responsibility dp
+            String text = textArea.getText();
+            float initialSize = text.getBytes().length;
+            if (xtreme.get()) {
+                text = provider.security().base64().encode(text);
+            }
+            Map<Character, Integer> count = provider.processor().textExtractor()
+                    .extract(text);
+            Map<String, String> map = provider.processor().huffmanEncoder().extract(count);
+            text = provider.processor().huffmanEncoder().encode(text, map);
+            text = provider.processor().huffmanEncoder().appendDicToCipher(map, text);
+            String header = provider.processor().compressedExtractor()
+                    .makeHeader(xtreme.get(), enteredPassword);
+            provider.persistence().compressed().write(address.getText(), header, text);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Done!");
+            alert.setHeaderText("Decoding Complete!");
+            float size = file.length();
+            float compressionRatio = size / initialSize * 100;
+            alert.setContentText("Compression Ratio:" + compressionRatio);
+            alert.showAndWait();
+        }
+    }
+
+    private boolean isDecodePermitted() {
+        return readPassword.equals(enteredPassword);
     }
 
     private Stage getStage() {
@@ -216,6 +301,7 @@ public final class MainController implements Initializable {
         provider = ServiceProvider.provide();
         text = new Text("");
         textArea.textProperty().bindBidirectional(text.getTextProperty());
+        xtreme.bindBidirectional(securityCheckbox.selectedProperty());
     }
 
     @FXML

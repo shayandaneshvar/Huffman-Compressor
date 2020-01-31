@@ -2,7 +2,9 @@ package ir.shayandaneshvar.services.processors;
 
 import javafx.util.Pair;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 public class CompressedInfoExtractor implements TextDecoder<String, Map<String
         , String>, String>,
@@ -46,10 +48,25 @@ public class CompressedInfoExtractor implements TextDecoder<String, Map<String
 
     @Override
     public String decode(String cipher, Map<String, String> dic) {
-        List<String> list = new ArrayList<>(dic.keySet());
-        list.stream().sorted(Comparator.comparingInt(s -> -s.length()))
-                .forEach(x -> cipher.replace(x, dic.get(x)));
-        return cipher;
+        StringBuilder builder = new StringBuilder("");
+        for (int i = 0; i < cipher.length(); i++) {
+            String subDecode = dic.get(cipher.substring(0, i));
+            if (subDecode != null) {
+                builder.append(subDecode);
+                cipher = cipher.substring(i);
+                i = 0;
+            }
+        }
+        if (cipher.length() != 0) {
+            builder.append(dic.get(cipher));
+        }
+        return builder.toString();
     }
 
+    public String makeHeader(boolean xtreme, String password) {
+        password = "<pass>" + password + "</pass>";
+        String xt = xtreme ? "T" : "F";
+        xt = "<X>" + xt + "</X>";
+        return password + xt;
+    }
 }

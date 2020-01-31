@@ -46,8 +46,7 @@ public class HuffmanEncoder implements TextEncoder<String, Map<String, String>,
     }
 
     public Pair<Map<String, String>, String> getDicCipherPair(Map<String,
-            String> dictionary,
-                                                              String cipher) {
+            String> dictionary, String cipher) {
         return new Pair<>(dictionary, cipher);
     }
 
@@ -57,5 +56,10 @@ public class HuffmanEncoder implements TextEncoder<String, Map<String, String>,
         builder.append("===");//end of dic
         builder.append(pair.getValue());
         return builder.toString();
+    }
+
+    public String appendDicToCipher(Map<String,
+            String> dictionary, String cipher) {
+        return appendDicToCipher(getDicCipherPair(dictionary, cipher));
     }
 }

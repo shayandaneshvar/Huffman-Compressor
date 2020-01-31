@@ -1,6 +1,5 @@
 package ir.shayandaneshvar;
 
-import ir.shayandaneshvar.presenter.MainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -14,20 +13,24 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public final class Main extends Application {
-    private static AnchorPane root;
-    private static Stage stage;
+    private AnchorPane root;
 
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void init() throws Exception {
+    public void stop() throws Exception {
+        super.stop();
+        System.exit(0);
+    }
+
+    @Override
+    public void init() {
         try {
             URL url = new File("src/main/java/ir/shayandaneshvar/view" +
                     "/main.fxml").toURI().toURL();
-            root = (AnchorPane) FXMLLoader.load(url);
-
+            root = FXMLLoader.load(url);
         } catch (MalformedURLException e) {
             throw new RuntimeException("Exception in URL");
         } catch (IOException e) {
@@ -37,7 +40,7 @@ public final class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         Scene scene = new Scene(root, root.getPrefWidth() - 20,
                 root.getPrefHeight()
                 , true, SceneAntialiasing.BALANCED);

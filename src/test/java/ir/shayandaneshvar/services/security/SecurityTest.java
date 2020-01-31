@@ -3,6 +3,8 @@ package ir.shayandaneshvar.services.security;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+
 public class SecurityTest {
     private static final MD5Algorithm md5 = new MD5Algorithm();
 

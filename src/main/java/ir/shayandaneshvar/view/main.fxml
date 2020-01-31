@@ -70,7 +70,7 @@
             <Font name="HelveticaRounded-Bold" size="16.0" />
          </font>
       </JFXButton>
-      <JFXToggleButton fx:id="encodeDecodeToggleButton" layoutX="20.0" layoutY="134.0" onMouseClicked="#handleToggle" prefHeight="46.0" prefWidth="183.0" text="Encode/Decode" textAlignment="CENTER" textFill="#f7f39a" toggleColor="#239d60" toggleLineColor="#a3de83" unToggleColor="#a3de83" unToggleLineColor="#f7f39a">
+      <JFXToggleButton fx:id="encodeDecodeToggleButton" layoutX="20.0" layoutY="134.0" onMouseClicked="#handleToggle" prefHeight="46.0" prefWidth="183.0" text="Decode/Encode" textAlignment="CENTER" textFill="#f7f39a" toggleColor="#239d60" toggleLineColor="#a3de83" unToggleColor="#a3de83" unToggleLineColor="#f7f39a">
          <font>
             <Font name="HelveticaRounded-Bold" size="12.0" />
          </font>
