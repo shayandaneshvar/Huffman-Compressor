@@ -5,10 +5,12 @@ import ir.shayandaneshvar.model.Text;
 import ir.shayandaneshvar.services.ServiceProvider;
 import ir.shayandaneshvar.services.persistence.CompressedFilePersistence;
 import ir.shayandaneshvar.services.persistence.TextFilePersistence;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -21,6 +23,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Pair;
 
 import java.io.File;
@@ -214,27 +217,52 @@ public final class MainController implements Initializable {
                 alert.showAndWait();
                 handlePassword(event);
             }
-        } else {//fixme => chain of responsibility dp
-            String text = textArea.getText();
-            float initialSize = text.getBytes().length;
-            if (xtreme.get()) {
-                text = provider.security().base64().encode(text);
-            }
-            Map<Character, Integer> count = provider.processor().textExtractor()
-                    .extract(text);
-            Map<String, String> map = provider.processor().huffmanEncoder().extract(count);
-            text = provider.processor().huffmanEncoder().encode(text, map);
-            text = provider.processor().huffmanEncoder().appendDicToCipher(map, text);
-            String header = provider.processor().compressedExtractor()
-                    .makeHeader(xtreme.get(), enteredPassword);
-            provider.persistence().compressed().write(address.getText(), header, text);
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Done!");
-            alert.setHeaderText("Decoding Complete!");
-            float size = file.length();
-            float compressionRatio = size / initialSize * 100;
-            alert.setContentText("Compression Ratio:" + compressionRatio);
-            alert.showAndWait();
+        } else {
+            //fixme => chain of responsibility dp
+            JFXProgressBar progressBar = new JFXProgressBar(0.01);
+            progressBar.setPrefWidth(200);
+            progressBar.setPrefHeight(50);
+            Stage stage = new Stage(StageStyle.UNDECORATED);
+            stage.initOwner(getStage());
+            Scene scene = new Scene(progressBar);
+            stage.setScene(scene);
+            stage.show();
+            executor.execute(() -> {
+                progressBar.setProgress(0.10);
+                String text = textArea.getText();
+                float initialSize = text.getBytes().length;
+                progressBar.setProgress(0.20);
+                if (xtreme.get()) {
+                    text = provider.security().base64().encode(text);
+                }
+                progressBar.setProgress(0.30);
+                Map<Character, Integer> count = provider.processor().textExtractor()
+                        .extract(text);
+                progressBar.setProgress(0.45);
+                Map<String, String> map = provider.processor().huffmanEncoder().extract(count);
+                progressBar.setProgress(0.55);
+                text = provider.processor().huffmanEncoder().encode(text, map);
+                progressBar.setProgress(0.75);
+                text = provider.processor().huffmanEncoder().appendDicToCipher(map, text);
+                progressBar.setProgress(0.8);
+                String header = provider.processor().compressedExtractor()
+                        .makeHeader(xtreme.get(), enteredPassword);
+                progressBar.setProgress(0.9);
+                provider.persistence().compressed().write(address.getText(), header, text);
+                progressBar.setProgress(0.95);
+                Platform.runLater(() -> {
+                    Alert alert =
+                            new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Done!");
+                    alert.setHeaderText("Decoding Complete!");
+                    float size = file.length();
+                    float compressionRatio = size / initialSize * 100;
+                    progressBar.setProgress(1);
+                    alert.setContentText("Compression Ratio:" + compressionRatio);
+                    stage.close();
+                    alert.showAndWait();
+                });
+            });
         }
     }
 
@@ -302,6 +330,7 @@ public final class MainController implements Initializable {
         text = new Text("");
         textArea.textProperty().bindBidirectional(text.getTextProperty());
         xtreme.bindBidirectional(securityCheckbox.selectedProperty());
+        encodeDecodeToggleButton.selectedProperty().set(true);
     }
 
     @FXML

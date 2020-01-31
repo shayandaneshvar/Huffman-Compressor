@@ -1,11 +1,9 @@
 package ir.shayandaneshvar.model;
 
-import com.sun.istack.internal.NotNull;
 
 import java.util.*;
 
 public class HuffmanTree implements Iterable<BinaryNode> {
-    @NotNull
     private final BinaryNode root;
     private Iterator<BinaryNode> preOrderIterator;
 

@@ -1,6 +1,5 @@
 package ir.shayandaneshvar.model;
 
-import com.sun.istack.internal.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 public class BinaryNode implements Comparable<BinaryNode> {
     private final String characters;
-    @NotNull
     private final Integer value;
     private BinaryNode right;
     private BinaryNode left;
