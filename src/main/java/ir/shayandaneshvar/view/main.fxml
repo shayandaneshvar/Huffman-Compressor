@@ -16,7 +16,7 @@
 
 <AnchorPane fx:id="root" prefHeight="576.0" prefWidth="720.0" style="-fx-background-color: #212125;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ir.shayandaneshvar.presenter.MainController">
    <children>
-      <Label fx:id="fileLabel" alignment="CENTER" onDragDropped="#handleDragDrop" onDragOver="#handleDragDrop" onMouseClicked="#fileClick" prefHeight="134.0" prefWidth="720.0" style="-fx-background-color: #239d60;" text="Choose/Drag a File Here...." textAlignment="CENTER" textFill="#f7f39a" wrapText="true">
+      <Label fx:id="fileLabel" alignment="CENTER" onDragOver="#handleDragDrop" onMouseClicked="#fileClick" prefHeight="134.0" prefWidth="720.0" style="-fx-background-color: #239d60;" text="Choose/Drag a File Here...." textAlignment="CENTER" textFill="#f7f39a" wrapText="true">
          <font>
             <Font name="HelveticaRounded-Bold" size="24.0" />
          </font>
@@ -24,7 +24,7 @@
             <DropShadow blurType="ONE_PASS_BOX" />
          </effect>
       </Label>
-      <JFXTextArea fx:id="textArea" labelFloat="true" layoutX="20.0" layoutY="192.0" onDragDropped="#handleDragDrop" prefHeight="322.0" prefWidth="680.0" style="-fx-background-color: #a3de83;" unFocusColor="#239d60" wrapText="true">
+      <JFXTextArea fx:id="textArea" labelFloat="true" layoutX="20.0" layoutY="192.0" onDragOver="#handleDragDrop" prefHeight="322.0" prefWidth="680.0" style="-fx-background-color: #a3de83;" unFocusColor="#239d60" wrapText="true">
          <effect>
             <Glow />
          </effect>

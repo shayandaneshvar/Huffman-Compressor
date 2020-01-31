@@ -343,7 +343,7 @@ public final class MainController implements Initializable {
             if (!files.isEmpty()) {
                 handleFileClick(files.get(0));
             }
-            event.setDropCompleted(true);
+//            event.setDropCompleted(true);
         }
         event.consume();
     }
