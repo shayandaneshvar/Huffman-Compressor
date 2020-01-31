@@ -12,12 +12,20 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 
 public final class Main extends Application {
     private AnchorPane root;
+    private static String[] args;
 
     public static void main(String[] args) {
-        launch(args);
+        Main.args = args;
+        System.out.println(Arrays.deepToString(args));
+        launch();
+    }
+
+    public static String[] getArgs() {
+        return args;
     }
 
     @Override

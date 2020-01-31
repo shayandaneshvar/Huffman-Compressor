@@ -1,6 +1,7 @@
 package ir.shayandaneshvar.presenter;
 
 import com.jfoenix.controls.*;
+import ir.shayandaneshvar.Main;
 import ir.shayandaneshvar.model.Text;
 import ir.shayandaneshvar.services.ServiceProvider;
 import ir.shayandaneshvar.services.persistence.CompressedFilePersistence;
@@ -127,8 +128,11 @@ public final class MainController implements Initializable {
         if (file != null) handleFileClick(file);
     }
 
-    private void handleFileClick(File file) {
+    private void handleFileClick(File file) throws StringIndexOutOfBoundsException{
         int index = file.toString().lastIndexOf(".");
+        if (index <= 0) {
+            somethingWentWrong();
+        }
         compressedRead = null;
         if (file.toString().substring(index)
                 .equals(CompressedFilePersistence.EXTENSION())) {
@@ -137,11 +141,7 @@ public final class MainController implements Initializable {
                 handleDecoding(file);
             } catch (IOException e) {
                 e.printStackTrace();
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Something went wrong!");
-                alert.setContentText("Files can be corrupted or damaged!");
-                alert.showAndWait();
+                somethingWentWrong();
             }
         } else if (file.toString().substring(index)
                 .equals(TextFilePersistence.EXTENSION())) {
@@ -155,6 +155,16 @@ public final class MainController implements Initializable {
             alert.setContentText("Files can be in .txt or .shct format");
             alert.showAndWait();
         }
+    }
+
+    private void somethingWentWrong() {
+        Platform.runLater(()->{
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("Something went wrong!");
+        alert.setContentText("Files can be corrupted or damaged!");
+        alert.showAndWait();
+        });
     }
 
     private boolean handleDecoding(File file) throws IOException {
@@ -331,6 +341,19 @@ public final class MainController implements Initializable {
         textArea.textProperty().bindBidirectional(text.getTextProperty());
         xtreme.bindBidirectional(securityCheckbox.selectedProperty());
         encodeDecodeToggleButton.selectedProperty().set(true);
+        if (Main.getArgs().length > 0) {
+            File file = new File(Main.getArgs()[0]);
+            executor.execute(() -> {
+                if (root == null) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                handleFileClick(file);
+            });
+        }
     }
 
     @FXML
