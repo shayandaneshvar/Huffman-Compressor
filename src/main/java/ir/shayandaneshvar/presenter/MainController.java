@@ -342,7 +342,7 @@ public final class MainController implements Initializable {
         xtreme.bindBidirectional(securityCheckbox.selectedProperty());
         encodeDecodeToggleButton.selectedProperty().set(true);
         if (Main.getArgs().length > 0) {
-            File file = new File(Main.getArgs()[0]);
+            File file = new File(Main.getArgs()[0].replace(", ", " "));
             executor.execute(() -> {
                 if (root == null) {
                     try {
