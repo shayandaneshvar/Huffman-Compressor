@@ -128,7 +128,7 @@ public final class MainController implements Initializable {
         if (file != null) handleFileClick(file);
     }
 
-    private void handleFileClick(File file) throws StringIndexOutOfBoundsException{
+    private void handleFileClick(File file) throws StringIndexOutOfBoundsException {
         int index = file.toString().lastIndexOf(".");
         if (index <= 0) {
             somethingWentWrong();
@@ -158,12 +158,12 @@ public final class MainController implements Initializable {
     }
 
     private void somethingWentWrong() {
-        Platform.runLater(()->{
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("Something went wrong!");
-        alert.setContentText("Files can be corrupted or damaged!");
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Something went wrong!");
+            alert.setContentText("Files can be corrupted or damaged!");
+            alert.showAndWait();
         });
     }
 
@@ -351,7 +351,12 @@ public final class MainController implements Initializable {
                         e.printStackTrace();
                     }
                 }
-                handleFileClick(file);
+                try {
+                    handleFileClick(file);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    somethingWentWrong();
+                }
             });
         }
     }
