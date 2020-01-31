@@ -341,7 +341,7 @@ public final class MainController implements Initializable {
         textArea.textProperty().bindBidirectional(text.getTextProperty());
         xtreme.bindBidirectional(securityCheckbox.selectedProperty());
         encodeDecodeToggleButton.selectedProperty().set(true);
-        if (Main.getArgs().length > 0) {
+        if (Main.getArgs().length > 0 && Main.getArgs()[0].trim().length() > 3) {
             File file = new File(Main.getArgs()[0].replace(", ", " "));
             executor.execute(() -> {
                 if (root == null) {
