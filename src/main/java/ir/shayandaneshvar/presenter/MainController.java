@@ -8,8 +8,11 @@ import ir.shayandaneshvar.services.persistence.TextFilePersistence;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -21,13 +24,40 @@ import javafx.util.Pair;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.StringTokenizer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public final class MainController implements Initializable {
-    private String pwd = "";
+    private final ExecutorService executor = Executors.newCachedThreadPool();
+    private String enteredPassword = "";
+    private String readPassword = "";
+    private boolean xtreme = false;
     private Text text;
     private ServiceProvider provider;
+    private Pair<String, String> compressedRead = null;
+    private Runnable handleDecode;
+    private String decoded;
+
+    {
+        handleDecode = () -> {
+            readPassword = provider.processor().compressedExtractor()
+                    .getPassword(compressedRead);
+            xtreme = provider.processor().compressedExtractor()
+                    .getExtremeSecurityStatus(compressedRead);
+            String result = provider.processor().compressedExtractor()
+                    .extract(compressedRead);
+            if (xtreme) {
+                decoded = provider.security().base64().decode(result);
+            } else {
+                decoded = result;
+            }
+        };
+    }
 
     @FXML
     private AnchorPane root;
@@ -98,11 +128,16 @@ public final class MainController implements Initializable {
                 .equals(CompressedFilePersistence.EXTENSION())) {
             encodeDecodeToggleButton.selectedProperty().set(false);
             try {
-                Pair<String, String> pair = provider.persistence().compressed().
-                        read(file.toString());
-                textArea.setText(pair.getValue());
+                compressedRead = provider.persistence().compressed().read(file.toString());
+                textArea.setText(compressedRead.getValue());
+                executor.execute(handleDecode);
             } catch (IOException e) {
                 e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Something went wrong!");
+                alert.setContentText("Files can be corrupted or damaged!");
+                alert.showAndWait();
             }
         } else if (file.toString().substring(index)
                 .equals(TextFilePersistence.EXTENSION())) {
@@ -119,7 +154,7 @@ public final class MainController implements Initializable {
 
     @FXML
     void processClick(MouseEvent event) {
-
+        // TODO: 1/31/2020
     }
 
     private Stage getStage() {
@@ -136,21 +171,44 @@ public final class MainController implements Initializable {
 
     @FXML
     void handlePassword(MouseEvent event) {
-        if(passwordCheckbox.isSelected()){
-            // TODO: 1/31/2020
-        }else {
-            System.err.println("u");
+        enteredPassword = "";
+        if (passwordCheckbox.isSelected()) {
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle("Password");
+            dialog.setHeaderText("Enter Password:");
+            dialog.setContentText(encodeDecodeToggleButton.selectedProperty()
+                    .getValue() ? "Enter your Desired Password" : "The Selected " +
+                    "File Requires a password to Open");
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                enteredPassword = provider.security().md5().getHashedValue(result.get());
+            } else {
+                if (!encodeDecodeToggleButton.selectedProperty()
+                        .getValue()) {
+                    handlePassword(event);
+                } else {
+                    passwordCheckbox.selectedProperty().set(false);
+                }
+            }
         }
     }
 
     @FXML
-    void handleSecurity(MouseEvent event) {
-
-    }
-
-    @FXML
     void handleToggle(MouseEvent event) {
-
+        StringTokenizer tokenizer = new StringTokenizer(text.getText(), "=>");
+        if ((tokenizer.countTokens() > 3 && encodeDecodeToggleButton
+                .selectedProperty().get()) || tokenizer.countTokens() == 0 && !encodeDecodeToggleButton
+                .selectedProperty().get()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Confirmation Dialog");
+            alert.setHeaderText("Are you sure?");
+            alert.setContentText("Warning : This might be the wrong move!");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (!result.isPresent()) {
+                encodeDecodeToggleButton.selectedProperty().setValue(
+                        !encodeDecodeToggleButton.selectedProperty().getValue());
+            }
+        }
     }
 
     @Override
@@ -158,5 +216,20 @@ public final class MainController implements Initializable {
         provider = ServiceProvider.provide();
         text = new Text("");
         textArea.textProperty().bindBidirectional(text.getTextProperty());
+    }
+
+    @FXML
+    void handleDragDrop(DragEvent event) {
+        System.err.println("b");
+        Dragboard db = event.getDragboard();
+        if (db.hasFiles()) {
+            List<File> files = db.getFiles().stream().filter(x -> x.toString()
+                    .endsWith(".txt") || x.toString().endsWith(".shct")).collect(Collectors.toList());
+            if (!files.isEmpty()) {
+                handleFileClick(files.get(0));
+            }
+            event.setDropCompleted(true);
+        }
+        event.consume();
     }
 }

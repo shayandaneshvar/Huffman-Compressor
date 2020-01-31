@@ -15,6 +15,13 @@ public class CompressedInfoExtractor implements TextDecoder<String, Map<String
         return header.substring(start + 6, end);
     }
 
+    public boolean getExtremeSecurityStatus(Pair<String, String> pair) {
+        String header = pair.getKey().split("===")[0];
+        int start = header.indexOf("<X>");//<X>T/F</X>
+        int end = header.lastIndexOf("</X>");
+        return header.substring(start + 3, end).equals("T");
+    }
+
     /**
      * @param readContent content read with CompressedFilePersistence read method
      * @return mapped values in this form : "001" => a
