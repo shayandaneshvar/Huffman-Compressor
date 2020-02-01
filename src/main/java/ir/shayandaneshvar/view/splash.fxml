@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXProgressBar?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.effect.Bloom?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+
+<AnchorPane prefHeight="231.0" prefWidth="506.0" style="-fx-background-color: #212125;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fitHeight="196.0" fitWidth="200.0" layoutX="14.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../resources/img/512.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="WAIT" />
+         </cursor>
+      </ImageView>
+      <Text fill="#f7f39a" layoutX="222.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 24;" text="Huffman Compressor" textAlignment="CENTER">
+         <effect>
+            <DropShadow color="#a3de83" spread="0.2" />
+         </effect>
+      </Text>
+      <Text fill="#f7f39a" fontSmoothingType="LCD" layoutX="254.0" layoutY="111.0" opacity="0.96" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 16;" text="By S.Shayan Daneshvar" textAlignment="CENTER">
+         <effect>
+            <InnerShadow color="#a3de83" height="255.0" offsetX="1.2" offsetY="10.0" radius="127.0" width="255.0">
+               <input>
+                  <Bloom />
+               </input>
+            </InnerShadow>
+         </effect>
+         <cursor>
+            <Cursor fx:constant="NONE" />
+         </cursor>
+      </Text>
+      <JFXProgressBar layoutX="222.0" layoutY="160.0" prefHeight="7.0" prefWidth="231.0" style="-fx-border-color: #a3de83;">
+         <cursor>
+            <Cursor fx:constant="WAIT" />
+         </cursor>
+      </JFXProgressBar>
+   </children>
+</AnchorPane>
