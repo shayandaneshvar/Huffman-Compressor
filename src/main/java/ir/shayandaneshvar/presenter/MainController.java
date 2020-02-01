@@ -6,6 +6,7 @@ import ir.shayandaneshvar.model.Text;
 import ir.shayandaneshvar.services.ServiceProvider;
 import ir.shayandaneshvar.services.persistence.CompressedFilePersistence;
 import ir.shayandaneshvar.services.persistence.TextFilePersistence;
+import ir.shayandaneshvar.util.NotificationUtil;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -179,6 +180,7 @@ public final class MainController implements Initializable {
         }
     }
 
+    //fixme too long - refactor required
     @FXML
     void processClick(MouseEvent event) {
         File file = new File(address.getText());
@@ -266,6 +268,7 @@ public final class MainController implements Initializable {
                     progressBar.setProgress(1);
                     alert.setContentText("Compression Ratio:" + compressionRatio);
                     stage.close();
+                    NotificationUtil.displayTray("Decode Complete!");
                     alert.showAndWait();
                 });
             });
@@ -371,7 +374,6 @@ public final class MainController implements Initializable {
             if (!files.isEmpty()) {
                 handleFileClick(files.get(0));
             }
-//            event.setDropCompleted(true);
         }
         event.consume();
     }
