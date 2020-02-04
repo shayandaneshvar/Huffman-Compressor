@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -83,7 +82,7 @@ public final class Main extends Application {
                     }
                 }, 3200);
                 stage.show();
-            }catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
