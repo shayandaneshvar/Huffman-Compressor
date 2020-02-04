@@ -21,7 +21,8 @@ public class CompressedFilePersistence implements FilePersistence<String,
         String[] strArr = headerAndInfo.getValue().split("===");
         String header = strArr[0];
         String cipher = strArr[1];
-        try (BinaryFile binaryFile = new BinaryFile(address, FileOption.WRITE)) {
+        try (BinaryFile binaryFile = new SemiBufferedBinaryFile(address,
+                FileOption.WRITE)) {
             String buffer = headerAndInfo.getKey() + "===" + header;//appending header
             binaryFile.writeChars(buffer);//end of buffer
             binaryFile.writeBits(cipher);
@@ -44,8 +45,8 @@ public class CompressedFilePersistence implements FilePersistence<String,
         if (!address.contains(EXTENSION())) {
             throw new IOException("File format not correct");
         }
-        try (BinaryFile bf = new BinaryFile(address, FileOption.READ)) {
-            String buffer = bf.readChars();//contatins stuff like pwd and dic
+        try (BinaryFile bf = new SemiBufferedBinaryFile(address, FileOption.READ)) {
+            String buffer = bf.readChars();//contains stuff like pwd and dic
             String cipher = bf.readBits();// cipher only
             return new Pair<>(buffer, cipher);
         }

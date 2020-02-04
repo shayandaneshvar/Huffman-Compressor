@@ -34,6 +34,10 @@ public class BinaryFile implements AutoCloseable {
     private boolean endOfHeader;
     private FileOption option;
 
+    protected RandomAccessFile getRandomAccessFile() {
+        return randomAccessFile;
+    }
+
     protected void setEndOfHeader(boolean b) {
         endOfHeader = b;
     }
