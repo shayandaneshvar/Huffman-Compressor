@@ -34,6 +34,19 @@ public class BinaryFile implements AutoCloseable {
     private boolean endOfHeader;
     private FileOption option;
 
+    protected void setEndOfHeader(boolean b) {
+        endOfHeader = b;
+    }
+
+    protected void setPosition(short pos) {
+        position = pos;
+    }
+
+    protected void setTotalBits(short bits) {
+        totalBits = bits;
+    }
+
+
     BinaryFile(String address, FileOption opt) throws IOException {
         endOfHeader = false;
         position = 32 + 8;
@@ -106,7 +119,7 @@ public class BinaryFile implements AutoCloseable {
         return result.toString();
     }
 
-    private void writeChar(char character) throws IOException {
+    protected void writeChar(char character) throws IOException {
         if (endOfHeader) {
             throw new IllegalStateException("writing buffer ends when write " +
                     "bit(s) is called!");
@@ -119,7 +132,7 @@ public class BinaryFile implements AutoCloseable {
         charBuffer += 1;
     }
 
-    void writeChars(String characters) throws IOException {
+    protected void writeChars(String characters) throws IOException {
         for (char character : characters.toCharArray()) {
             writeChar(character);
         }
@@ -132,7 +145,7 @@ public class BinaryFile implements AutoCloseable {
      * @param string of integers in binary form
      * @throws IOException thrown under different circumstances
      */
-    void writeBits(String string) throws IOException {
+    protected void writeBits(String string) throws IOException {
         if (option == FileOption.READ) {
             throw new IllegalStateException("Cannot Write when opened for " +
                     "reading only!");
@@ -150,7 +163,7 @@ public class BinaryFile implements AutoCloseable {
         excessBits = (byte) ((8 - string.length() % 8) % 8);
     }
 
-    private void writeBit(byte bits) throws IOException {
+    protected void writeBit(byte bits) throws IOException {
         endOfHeader = true;
         randomAccessFile.writeByte(bits);
         position += 8;
